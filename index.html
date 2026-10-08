@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="referrer" content="no-referrer">
+  <title>Quiz de 1000 Palabras - Jemer y Coreano</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;600;700&family=Noto+Sans+KR:wght@400;600;700;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-light: #6366f1;
+      --gold: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-sub: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+    }
+
+    .khmer-font { font-family: 'Kantumruy Pro', sans-serif; }
+    .korean-font { font-family: 'Noto Sans KR', sans-serif; }
+
+    .container {
+      width: 100%;
+      max-width: 660px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Selector de idioma */
+    .lang-switcher {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 5px;
+      border-radius: 14px;
+    }
+
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary-light);
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);
+    }
+
+    /* Encabezado */
+    header {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .app-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-pill {
+      background: var(--card-sub);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 16px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-pill:active { transform: scale(0.96); }
+
+    /* Pestañas de categorías */
+    .tabs-row {
+      display: flex;
+      gap: 5px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 7px 2px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Barra de estadísticas */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.45);
+      padding: 8px 4px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .stat-label { font-size: 0.66rem; color: var(--text-muted); }
+    .stat-val { font-size: 0.88rem; font-weight: 700; color: #fff; }
+    .stat-val.gold { color: var(--gold); }
+    .stat-val.green { color: var(--success); }
+
+    .progress-container {
+      width: 100%;
+      height: 5px;
+      background: #334155;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6366f1, #10b981);
+      transition: width 0.25s ease;
+    }
+
+    /* Tarjeta del cuestionario */
+    .quiz-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .category-badge {
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 12px;
+    }
+
+    .shortcut-hint {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .word-display {
+      text-align: center;
+      padding: 10px 4px;
+      background: radial-gradient(circle at center, rgba(99, 102, 241, 0.12) 0%, rgba(15, 23, 42, 0) 70%);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .foreign-word {
+      font-size: 2.7rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .pronunciation-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid var(--border);
+      padding: 5px 14px;
+      border-radius: 20px;
+    }
+
+    .pron-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .btn-speak-main {
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* Opciones múltiples */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .option-btn {
+      background: var(--card-sub);
+      border: 2px solid var(--border);
+      color: var(--text);
+      border-radius: 13px;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .option-btn:hover:not(.locked) {
+      background: #475569;
+      border-color: var(--primary-light);
+    }
+
+    .option-main-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .option-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .option-num {
+      width: 25px;
+      height: 25px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .option-meaning {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .option-status-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      display: none;
+    }
+
+    /* Área revelada al responder */
+    .option-revealed-area {
+      display: none;
+      padding-top: 8px;
+      margin-top: 4px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .revealed-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .rev-word-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rev-foreign {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .rev-pron {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    .btn-opt-tts {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .option-btn.correct {
+      background: rgba(16, 185, 129, 0.2) !important;
+      border-color: var(--success) !important;
+    }
+    .option-btn.correct .option-num { background: var(--success); color: #fff; }
+    .option-btn.correct .option-status-badge { display: inline-block; background: var(--success); color: #fff; }
+
+    .option-btn.wrong-chosen {
+      background: rgba(239, 68, 68, 0.2) !important;
+      border-color: var(--danger) !important;
+    }
+    .option-btn.wrong-chosen .option-num { background: var(--danger); color: #fff; }
+    .option-btn.wrong-chosen .option-status-badge { display: inline-block; background: var(--danger); color: #fff; }
+
+    .option-btn.distractor { opacity: 0.88; }
+    .option-btn.locked { cursor: default; }
+
+    /* Barra de resultado */
+    .feedback-bar {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border);
+      animation: slideUp 0.25s ease;
+    }
+
+    .feedback-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+
+    .btn-next-question {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border: none;
+      color: #fff;
+      padding: 13px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Notificación flotante */
+    .toast-popup {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--gold);
+      color: #fff;
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.25s ease;
+      pointer-events: none;
+    }
+
+    .toast-popup.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Modal de vocabulario */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      z-index: 900;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 580px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title { font-size: 1rem; font-weight: 700; }
+    .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.4rem; cursor: pointer; }
+
+    .modal-body {
+      padding: 12px 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .vocab-search-input {
+      width: 100%;
+      background: var(--card-sub);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 9px;
+      color: #fff;
+      font-size: 0.88rem;
+    }
+
+    .vocab-search-input:focus { outline: none; border-color: var(--primary-light); }
+    .vocab-list { display: flex; flex-direction: column; gap: 7px; }
+
+    .vocab-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(15, 23, 42, 0.5);
+      padding: 8px 12px;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 480px) {
+      .foreign-word { font-size: 2.3rem; }
+      .pron-text { font-size: 1rem; }
+      .option-meaning { font-size: 0.98rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Selector de idioma -->
+    <div class="lang-switcher">
+      <button class="lang-btn active" id="btnLangKm" data-lang="km">
+        <span>🇰🇭</span> Jemer (ភាសាខ្មែរ)
+      </button>
+      <button class="lang-btn" id="btnLangKo" data-lang="ko">
+        <span>🇰🇷</span> Coreano (한국어)
+      </button>
+    </div>
+
+    <!-- Encabezado -->
+    <header>
+      <div class="header-top">
+        <div class="logo-area">
+          <span id="currentLangFlag" style="font-size: 1.5rem;">🇰🇭</span>
+          <h1 class="app-title" id="appMainTitle">1000 Palabras - Jemer</h1>
+        </div>
+        <div class="header-actions">
+          <button class="btn-pill" id="btnTestSound">🔊 Probar audio</button>
+          <button class="btn-pill" id="btnOpenVocab">📖 Diccionario</button>
+        </div>
+      </div>
+
+      <!-- Pestañas de categorías -->
+      <div class="tabs-row">
+        <button class="tab-btn active" data-mode="all">Todos</button>
+        <button class="tab-btn" data-mode="verb">Verbos</button>
+        <button class="tab-btn" data-mode="adj">Adjetivos</button>
+        <button class="tab-btn" data-mode="wrong">Repaso (<span id="wrongCount">0</span>)</button>
+      </div>
+
+      <!-- Barra de estadísticas -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-label">Progreso</span>
+          <span class="stat-val"><span id="statCurrent">1</span> / <span id="statTotal">1000</span></span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Aciertos</span>
+          <span class="stat-val green"><span id="statCorrect">0</span> / <span id="statSolved">0</span></span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Precisión</span>
+          <span class="stat-val" id="statRate">0%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Racha</span>
+          <span class="stat-val gold">🔥 <span id="statCombo">0</span></span>
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </header>
+
+    <!-- Tarjeta del quiz -->
+    <main class="quiz-card">
+      <div class="card-meta">
+        <span class="category-badge" id="badgeCategory">Verbo</span>
+        <span class="shortcut-hint">Teclas: 1 2 3 4 | Espacio</span>
+      </div>
+
+      <div class="word-display">
+        <div class="foreign-word khmer-font" id="displayWord">ញ៉ាំ</div>
+        <div class="pronunciation-box">
+          <span class="pron-text" id="displayPron">[ñam]</span>
+          <button class="btn-speak-main" id="btnMainSpeak" title="Escuchar pronunciación">🔊</button>
+        </div>
+      </div>
+
+      <!-- Contenedor de opciones de selección múltiple -->
+      <div class="options-grid" id="optionsContainer"></div>
+
+      <!-- Barra de resultado y siguiente pregunta -->
+      <div class="feedback-bar" id="feedbackBar">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <button class="btn-next-question" id="btnNext">
+          Siguiente pregunta ➔ (Enter / Espacio)
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal de diccionario -->
+  <div class="modal-overlay" id="vocabModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="vocabModalTitle">📖 Diccionario de Vocabulario</h3>
+        <button class="modal-close" id="btnCloseVocab">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" class="vocab-search-input" id="vocabSearch" placeholder="Buscar palabra, pronunciación o español...">
+        <div class="vocab-list" id="vocabList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notificación toast -->
+  <div class="toast-popup" id="toastPopup">
+    <span id="toastMsg">Reproduciendo audio...</span>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. Datos base: Jemer y Coreano explicados en ESPAÑOL
+          (Pronunciación adaptada a la fonética del español)
+       ========================================================================== */
+    const RAW_KHMER = [
+      // Verbos
+      { word: "ញ៉ាំ", pron: "ñam", meaning: "comer (coloquial)", type: "Verbo" },
+      { word: "ហូប", pron: "joub", meaning: "comer (general)", type: "Verbo" },
+      { word: "ពិសា", pron: "pisa", meaning: "tomar / beber (formal)", type: "Verbo" },
+      { word: "ផឹក", pron: "feuk", meaning: "beber", type: "Verbo" },
+      { word: "ទៅ", pron: "teu", meaning: "ir", type: "Verbo" },
+      { word: "មក", pron: "mok", meaning: "venir", type: "Verbo" },
+      { word: "ធ្វើ", pron: "tveu", meaning: "hacer / fabricar", type: "Verbo" },
+      { word: "មើល", pron: "meul", meaning: "ver / mirar", type: "Verbo" },
+      { word: "ស្ដាប់", pron: "sdap", meaning: "escuchar", type: "Verbo" },
+      { word: "និយាយ", pron: "niyei", meaning: "hablar / conversar", type: "Verbo" },
+      { word: "អាន", pron: "an", meaning: "leer", type: "Verbo" },
+      { word: "សរសេរ", pron: "sosei", meaning: "escribir", type: "Verbo" },
+      { word: "គេង", pron: "keng", meaning: "dormir", type: "Verbo" },
+      { word: "ភ្ញាក់", pron: "pñak", meaning: "despertar", type: "Verbo" },
+      { word: "ដើរ", pron: "daeu", meaning: "caminar / pasear", type: "Verbo" },
+      { word: "រត់", pron: "rot", meaning: "correr", type: "Verbo" },
+      { word: "អង្គុយ", pron: "ang-kui", meaning: "sentarse", type: "Verbo" },
+      { word: "ឈរ", pron: "cho", meaning: "estar de pie", type: "Verbo" },
+      { word: "ជួប", pron: "chuop", meaning: "encontrarse / ver a alguien", type: "Verbo" },
+      { word: "ស្រឡាញ់", pron: "srolañ", meaning: "amar", type: "Verbo" },
+      { word: "ចូលចិត្ត", pron: "choul-chet", meaning: "gustar", type: "Verbo" },
+      { word: "ស្អប់", pron: "sp-op", meaning: "odiar / detestar", type: "Verbo" },
+      { word: "ដឹង", pron: "deung", meaning: "saber (hecho)", type: "Verbo" },
+      { word: "ស្គាល់", pron: "skual", meaning: "conocer (persona/lugar)", type: "Verbo" },
+      { word: "យល់", pron: "yol", meaning: "entender / comprender", type: "Verbo" },
+      { word: "ទិញ", pron: "tiñ", meaning: "comprar", type: "Verbo" },
+      { word: "លក់", pron: "luok", meaning: "vender", type: "Verbo" },
+      { word: "ឱ្យ", pron: "aoy", meaning: "dar", type: "Verbo" },
+      { word: "យក", pron: "yok", meaning: "tomar / agarrar", type: "Verbo" },
+      { word: "រៀន", pron: "rian", meaning: "aprender / estudiar", type: "Verbo" },
+      { word: "បង្រៀន", pron: "bong-rian", meaning: "enseñar", type: "Verbo" },
+      { word: "ធ្វើការ", pron: "tveu-ka", meaning: "trabajar", type: "Verbo" },
+      { word: "សម្រាក", pron: "som-rak", meaning: "descansar", type: "Verbo" },
+      { word: "បើក", pron: "baek", meaning: "abrir / conducir", type: "Verbo" },
+      { word: "បិទ", pron: "bot", meaning: "cerrar / apagar", type: "Verbo" },
+      { word: "ភ្លេច", pron: "plech", meaning: "olvidar", type: "Verbo" },
+      { word: "ចាំ", pron: "cham", meaning: "recordar / esperar", type: "Verbo" },
+      { word: "ជួយ", pron: "chuoy", meaning: "ayudar", type: "Verbo" },
+      { word: "សួរ", pron: "suo", meaning: "preguntar", type: "Verbo" },
+      { word: "ឆ្លើយ", pron: "chlaey", meaning: "responder", type: "Verbo" },
+      { word: "គិត", pron: "kut", meaning: "pensar", type: "Verbo" },
+      { word: "សើច", pron: "saech", meaning: "reír", type: "Verbo" },
+      { word: "យំ", pron: "yum", meaning: "llorar", type: "Verbo" },
+      { word: "ឈប់", pron: "chop", meaning: "parar / detenerse", type: "Verbo" },
+      { word: "ចាប់ផ្តើម", pron: "chap-pdaem", meaning: "comenzar / empezar", type: "Verbo" },
+      { word: "បញ្ចប់", pron: "bon-chop", meaning: "terminar / finalizar", type: "Verbo" },
+      { word: "ចម្អិន", pron: "chom-un", meaning: "cocinar", type: "Verbo" },
+      { word: "សម្អាត", pron: "som-at", meaning: "limpiar", type: "Verbo" },
+      { word: "ផ្ញើ", pron: "pñaer", meaning: "enviar", type: "Verbo" },
+      { word: "ទទួល", pron: "to-tuol", meaning: "recibir", type: "Verbo" },
+      { word: "រក", pron: "rok", meaning: "buscar", type: "Verbo" },
+      // Adjetivos
+      { word: "ធំ", pron: "thom", meaning: "grande", type: "Adjetivo" },
+      { word: "តូច", pron: "toch", meaning: "pequeño", type: "Adjetivo" },
+      { word: "ខ្ពស់", pron: "kpuoh", meaning: "alto", type: "Adjetivo" },
+      { word: "ទាប", pron: "tiap", meaning: "bajo", type: "Adjetivo" },
+      { word: "វែង", pron: "veang", meaning: "largo", type: "Adjetivo" },
+      { word: "ខ្លី", pron: "klai", meaning: "corto", type: "Adjetivo" },
+      { word: "ធាត់", pron: "toat", meaning: "gordo", type: "Adjetivo" },
+      { word: "ស្គម", pron: "skom", meaning: "delgado / flaco", type: "Adjetivo" },
+      { word: "ស្អាត", pron: "s-at", meaning: "bonito / limpio", type: "Adjetivo" },
+      { word: "អាក្រក់", pron: "akrok", meaning: "malo / feo", type: "Adjetivo" },
+      { word: "ល្អ", pron: "l-or", meaning: "bueno", type: "Adjetivo" },
+      { word: "ចាស់", pron: "chas", meaning: "viejo", type: "Adjetivo" },
+      { word: "ក្មេង", pron: "kmeng", meaning: "joven", type: "Adjetivo" },
+      { word: "ថ្មី", pron: "tmei", meaning: "nuevo", type: "Adjetivo" },
+      { word: "ច្រើន", pron: "chraen", meaning: "mucho", type: "Adjetivo" },
+      { word: "តិច", pron: "tech", meaning: "poco", type: "Adjetivo" },
+      { word: "ក្តៅ", pron: "kdau", meaning: "caliente", type: "Adjetivo" },
+      { word: "ត្រជាក់", pron: "tro-cheak", meaning: "frío", type: "Adjetivo" },
+      { word: "ឆ្ងាញ់", pron: "ch-ñan", meaning: "delicioso / rico", type: "Adjetivo" },
+      { word: "ថ្លៃ", pron: "tlai", meaning: "caro", type: "Adjetivo" },
+      { word: "ថោក", pron: "taok", meaning: "barato", type: "Adjetivo" },
+      { word: "ឆ្ងាយ", pron: "ch-ngai", meaning: "lejos", type: "Adjetivo" },
+      { word: "ជិត", pron: "chet", meaning: "cerca", type: "Adjetivo" },
+      { word: "លឿន", pron: "luean", meaning: "rápido", type: "Adjetivo" },
+      { word: "យឺត", pron: "yeut", meaning: "lento", type: "Adjetivo" },
+      { word: "ងាយ", pron: "ngeay", meaning: "fácil", type: "Adjetivo" },
+      { word: "ពិបាក", pron: "pi-bak", meaning: "difícil", type: "Adjetivo" },
+      { word: "ធ្ងន់", pron: "tngun", meaning: "pesado", type: "Adjetivo" },
+      { word: "ស្រាល", pron: "sral", meaning: "ligero", type: "Adjetivo" },
+      { word: "ខ្លាំង", pron: "klang", meaning: "fuerte", type: "Adjetivo" },
+      { word: "ខ្សោយ", pron: "ksaoy", meaning: "débil", type: "Adjetivo" },
+      { word: "ឆ្លាត", pron: "chlat", meaning: "inteligente", type: "Adjetivo" },
+      { word: "ផ្អែម", pron: "p-aem", meaning: "dulce", type: "Adjetivo" },
+      { word: "ហឹរ", pron: "jor", meaning: "picante", type: "Adjetivo" },
+      { word: "ប្រៃ", pron: "prai", meaning: "salado", type: "Adjetivo" },
+      { word: "សប្បាយ", pron: "sa-bai", meaning: "feliz / alegre", type: "Adjetivo" },
+      { word: "រវល់", pron: "ro-vul", meaning: "ocupado", type: "Adjetivo" },
+      { word: "ទំនេរ", pron: "tum-nei", meaning: "libre / disponible", type: "Adjetivo" },
+      { word: "ស្ងប់ស្ងាត់", pron: "sngop-sngat", meaning: "tranquilo / silencioso", type: "Adjetivo" },
+      { word: "សំខាន់", pron: "som-kan", meaning: "importante", type: "Adjetivo" },
+      { word: "គ្រោះថ្នាក់", pron: "kruoh-tnak", meaning: "peligroso", type: "Adjetivo" },
+      { word: "សុវត្ថិភាព", pron: "so-vatte-piap", meaning: "seguro", type: "Adjetivo" },
+      { word: "ហត់", pron: "jot", meaning: "cansado", type: "Adjetivo" },
+      { word: "ឈឺ", pron: "cheu", meaning: "enfermo / adolorido", type: "Adjetivo" }
+    ];
+
+    const RAW_KOREAN = [
+      // Verbos
+      { word: "먹다", pron: "meok-da", meaning: "comer", type: "Verbo" },
+      { word: "마시다", pron: "ma-shi-da", meaning: "beber", type: "Verbo" },
+      { word: "가다", pron: "ka-da", meaning: "ir", type: "Verbo" },
+      { word: "오다", pron: "o-da", meaning: "venir", type: "Verbo" },
+      { word: "하다", pron: "ja-da", meaning: "hacer", type: "Verbo" },
+      { word: "만들다", pron: "man-deul-da", meaning: "fabricar / hacer", type: "Verbo" },
+      { word: "보다", pron: "bo-da", meaning: "ver / mirar", type: "Verbo" },
+      { word: "듣다", pron: "teut-da", meaning: "escuchar", type: "Verbo" },
+      { word: "말하다", pron: "mal-ja-da", meaning: "hablar", type: "Verbo" },
+      { word: "읽다", pron: "ik-da", meaning: "leer", type: "Verbo" },
+      { word: "쓰다", pron: "sseu-da", meaning: "escribir", type: "Verbo" },
+      { word: "자다", pron: "cha-da", meaning: "dormir", type: "Verbo" },
+      { word: "일어나다", pron: "il-o-na-da", meaning: "despertar / levantarse", type: "Verbo" },
+      { word: "걷다", pron: "keot-da", meaning: "caminar", type: "Verbo" },
+      { word: "달리다", pron: "tal-li-da", meaning: "correr", type: "Verbo" },
+      { word: "앉다", pron: "an-da", meaning: "sentarse", type: "Verbo" },
+      { word: "서다", pron: "seo-da", meaning: "estar de pie", type: "Verbo" },
+      { word: "만나다", pron: "man-na-da", meaning: "encontrarse / conocer", type: "Verbo" },
+      { word: "사랑하다", pron: "sa-rang-ja-da", meaning: "amar", type: "Verbo" },
+      { word: "좋아하다", pron: "cho-a-ja-da", meaning: "gustar", type: "Verbo" },
+      { word: "싫어하다", pron: "shi-ro-ja-da", meaning: "odiar / no gustar", type: "Verbo" },
+      { word: "알다", pron: "al-da", meaning: "saber / conocer", type: "Verbo" },
+      { word: "이해하다", pron: "i-jae-ja-da", meaning: "entender / comprender", type: "Verbo" },
+      { word: "사다", pron: "sa-da", meaning: "comprar", type: "Verbo" },
+      { word: "팔다", pron: "pal-da", meaning: "vender", type: "Verbo" },
+      { word: "주다", pron: "chu-da", meaning: "dar", type: "Verbo" },
+      { word: "받다", pron: "bat-da", meaning: "recibir", type: "Verbo" },
+      { word: "가지다", pron: "ka-ji-da", meaning: "tener / tomar", type: "Verbo" },
+      { word: "배우다", pron: "bae-u-da", meaning: "aprender", type: "Verbo" },
+      { word: "가르치다", pron: "ka-reu-chi-da", meaning: "enseñar", type: "Verbo" },
+      { word: "일하다", pron: "il-ja-da", meaning: "trabajar", type: "Verbo" },
+      { word: "쉬다", pron: "shwi-da", meaning: "descansar", type: "Verbo" },
+      { word: "열다", pron: "yeol-da", meaning: "abrir", type: "Verbo" },
+      { word: "닫다", pron: "tat-da", meaning: "cerrar", type: "Verbo" },
+      { word: "잊다", pron: "it-da", meaning: "olvidar", type: "Verbo" },
+      { word: "기억하다", pron: "ki-eok-ja-da", meaning: "recordar", type: "Verbo" },
+      { word: "기다리다", pron: "ki-da-ri-da", meaning: "esperar", type: "Verbo" },
+      { word: "돕다", pron: "dop-da", meaning: "ayudar", type: "Verbo" },
+      { word: "묻다", pron: "mut-da", meaning: "preguntar", type: "Verbo" },
+      { word: "대답하다", pron: "tae-dap-ja-da", meaning: "responder", type: "Verbo" },
+      { word: "생각하다", pron: "saeng-gak-ja-da", meaning: "pensar", type: "Verbo" },
+      { word: "웃다", pron: "ut-da", meaning: "reír", type: "Verbo" },
+      { word: "울다", pron: "ul-da", meaning: "llorar", type: "Verbo" },
+      { word: "멈추다", pron: "meom-chu-da", meaning: "detenerse / parar", type: "Verbo" },
+      { word: "시작하다", pron: "shi-jak-ja-da", meaning: "comenzar / empezar", type: "Verbo" },
+      { word: "끝내다", pron: "kkeut-nae-da", meaning: "terminar / finalizar", type: "Verbo" },
+      { word: "요리하다", pron: "yo-ri-ja-da", meaning: "cocinar", type: "Verbo" },
+      { word: "청소하다", pron: "cheong-so-ja-da", meaning: "limpiar", type: "Verbo" },
+      { word: "보내다", pron: "bo-nae-da", meaning: "enviar", type: "Verbo" },
+      { word: "찾다", pron: "chat-da", meaning: "buscar / encontrar", type: "Verbo" },
+      { word: "운전하다", pron: "un-jeon-ja-da", meaning: "conducir", type: "Verbo" },
+      // Adjetivos
+      { word: "크다", pron: "keu-da", meaning: "grande", type: "Adjetivo" },
+      { word: "작다", pron: "chak-da", meaning: "pequeño", type: "Adjetivo" },
+      { word: "높다", pron: "nop-da", meaning: "alto (lugar/cosa)", type: "Adjetivo" },
+      { word: "낮다", pron: "nat-da", meaning: "bajo", type: "Adjetivo" },
+      { word: "길다", pron: "kil-da", meaning: "largo", type: "Adjetivo" },
+      { word: "짧다", pron: "tchwal-da", meaning: "corto", type: "Adjetivo" },
+      { word: "뚱뚱하다", pron: "ttung-ttung-ja-da", meaning: "gordo", type: "Adjetivo" },
+      { word: "날씬하다", pron: "nal-ssin-ja-da", meaning: "delgado", type: "Adjetivo" },
+      { word: "예쁘다", pron: "ye-ppeu-da", meaning: "bonito / hermoso", type: "Adjetivo" },
+      { word: "못생기다", pron: "mot-saeng-gi-da", meaning: "feo", type: "Adjetivo" },
+      { word: "좋다", pron: "cho-ta", meaning: "bueno", type: "Adjetivo" },
+      { word: "나쁘다", pron: "na-ppeu-da", meaning: "malo", type: "Adjetivo" },
+      { word: "늙다", pron: "neuk-da", meaning: "viejo / anciano", type: "Adjetivo" },
+      { word: "젊다", pron: "jeom-da", meaning: "joven", type: "Adjetivo" },
+      { word: "새롭다", pron: "sae-rop-da", meaning: "nuevo", type: "Adjetivo" },
+      { word: "많다", pron: "man-ta", meaning: "mucho", type: "Adjetivo" },
+      { word: "적다", pron: "cheok-da", meaning: "poco", type: "Adjetivo" },
+      { word: "덥다", pron: "teop-da", meaning: "caluroso", type: "Adjetivo" },
+      { word: "춥다", pron: "chup-da", meaning: "frío", type: "Adjetivo" },
+      { word: "맛있다", pron: "ma-shit-da", meaning: "delicioso / rico", type: "Adjetivo" },
+      { word: "비싸다", pron: "pi-ssa-da", meaning: "caro", type: "Adjetivo" },
+      { word: "싸다", pron: "ssa-da", meaning: "barato", type: "Adjetivo" },
+      { word: "멀다", pron: "meol-da", meaning: "lejos", type: "Adjetivo" },
+      { word: "가깝다", pron: "ka-kkap-da", meaning: "cerca", type: "Adjetivo" },
+      { word: "빠르다", pron: "ppa-reu-da", meaning: "rápido", type: "Adjetivo" },
+      { word: "느리다", pron: "neu-ri-da", meaning: "lento", type: "Adjetivo" },
+      { word: "쉽다", pron: "shwip-da", meaning: "fácil", type: "Adjetivo" },
+      { word: "어렵다", pron: "o-ryeop-da", meaning: "difícil", type: "Adjetivo" },
+      { word: "무겁다", pron: "mu-geop-da", meaning: "pesado", type: "Adjetivo" },
+      { word: "가볍다", pron: "ka-byeop-da", meaning: "ligero", type: "Adjetivo" },
+      { word: "강하다", pron: "kang-ja-da", meaning: "fuerte", type: "Adjetivo" },
+      { word: "약하다", pron: "yak-ja-da", meaning: "débil", type: "Adjetivo" },
+      { word: "똑똑하다", pron: "ttok-ttok-ja-da", meaning: "inteligente", type: "Adjetivo" },
+      { word: "달다", pron: "tal-da", meaning: "dulce", type: "Adjetivo" },
+      { word: "맵다", pron: "maep-da", meaning: "picante", type: "Adjetivo" },
+      { word: "짜다", pron: "tcha-da", meaning: "salado", type: "Adjetivo" },
+      { word: "행복하다", pron: "jaeng-bok-ja-da", meaning: "feliz", type: "Adjetivo" },
+      { word: "슬프다", pron: "seul-peu-da", meaning: "triste", type: "Adjetivo" },
+      { word: "바쁘다", pron: "pa-ppeu-da", meaning: "ocupado", type: "Adjetivo" },
+      { word: "조용하다", pron: "cho-yong-ja-da", meaning: "tranquilo / silencioso", type: "Adjetivo" },
+      { word: "깨끗하다", pron: "kkae-kkeut-ja-da", meaning: "limpio", type: "Adjetivo" },
+      { word: "더럽다", pron: "to-reop-da", meaning: "sucio", type: "Adjetivo" },
+      { word: "피곤하다", pron: "pi-gon-ja-da", meaning: "cansado", type: "Adjetivo" },
+      { word: "아프다", pron: "a-peu-da", meaning: "enfermo / adolorido", type: "Adjetivo" }
+    ];
+
+    /* ==========================================================================
+       2. Generador balanceado de 1000 preguntas
+       ========================================================================== */
+    function build1000Bank(rawArray, langKey) {
+      const bank = [];
+      rawArray.forEach(item => {
+        bank.push({ word: item.word, pron: item.pron, meaning: item.meaning, type: item.type });
+      });
+
+      let idx = 0;
+      let seed = 0;
+
+      if (langKey === 'km') {
+        const kmVerbMods = [
+          { prefix: "ចង់", pron: "chong ", esPrefix: "querer " },
+          { prefix: "មិន", pron: "mun ", esPrefix: "no " },
+          { prefix: "កំពុង", pron: "kom-pong ", esPrefix: "estar " },
+          { prefix: "ធ្លាប់", pron: "tluop ", esPrefix: "haber solido " }
+        ];
+        const kmAdjMods = [
+          { suffix: "ណាស់", pron: " nas", esPrefix: "muy " },
+          { suffix: "ពេក", pron: " pek", esPrefix: "demasiado " },
+          { suffix: "បន្តិច", pron: " bon-tech", esPrefix: "un poco " }
+        ];
+
+        while (bank.length < 1000) {
+          const base = rawArray[idx % rawArray.length];
+          let w, pr, m;
+          if (base.type === "Verbo") {
+            const mod = kmVerbMods[seed % kmVerbMods.length];
+            w = mod.prefix + base.word;
+            pr = mod.pron + base.pron;
+            m = mod.esPrefix + base.meaning;
+          } else {
+            const mod = kmAdjMods[seed % kmAdjMods.length];
+            w = base.word + mod.suffix;
+            pr = base.pron + mod.pron;
+            m = mod.esPrefix + base.meaning;
+          }
+          bank.push({ word: w, pron: pr, meaning: m, type: base.type });
+          idx++;
+          seed++;
+        }
+      } else if (langKey === 'ko') {
+        const koVerbMods = [
+          { prefix: "안 ", pron: "an ", esPrefix: "no " },
+          { suffix: "고 싶다", pron: "-go ship-da", esPrefix: "querer " },
+          { prefix: "자주 ", pron: "cha-ju ", esPrefix: "a menudo " },
+          { suffix: "는 중이다", pron: "-neun jung-i-da", esPrefix: "estar en medio de " }
+        ];
+        const koAdjMods = [
+          { prefix: "매우 ", pron: "mae-u ", esPrefix: "muy " },
+          { prefix: "너무 ", pron: "no-mu ", esPrefix: "demasiado " },
+          { prefix: "조금 ", pron: "cho-geum ", esPrefix: "un poco " },
+          { prefix: "정말 ", pron: "chong-mal ", esPrefix: "realmente " }
+        ];
+
+        while (bank.length < 1000) {
+          const base = rawArray[idx % rawArray.length];
+          let w, pr, m;
+          if (base.type === "Verbo") {
+            const mod = koVerbMods[seed % koVerbMods.length];
+            if (mod.prefix) {
+              w = mod.prefix + base.word;
+              pr = mod.pron + base.pron;
+            } else {
+              const stem = base.word.replace(/다$/, '');
+              w = stem + mod.suffix;
+              pr = base.pron.replace(/-da$/, '') + mod.pron;
+            }
+            m = mod.esPrefix + base.meaning;
+          } else {
+            const mod = koAdjMods[seed % koAdjMods.length];
+            w = mod.prefix + base.word;
+            pr = mod.pron + base.pron;
+            m = mod.esPrefix + base.meaning;
+          }
+          bank.push({ word: w, pron: pr, meaning: m, type: base.type });
+          idx++;
+          seed++;
+        }
+      }
+
+      return bank;
+    }
+
+    const DB = {
+      km: {
+        raw: RAW_KHMER,
+        bank: build1000Bank(RAW_KHMER, 'km'),
+        fontClass: 'khmer-font',
+        title: '1000 Palabras - Jemer',
+        flag: '🇰🇭',
+        ttsLang: 'km'
+      },
+      ko: {
+        raw: RAW_KOREAN,
+        bank: build1000Bank(RAW_KOREAN, 'ko'),
+        fontClass: 'korean-font',
+        title: '1000 Palabras - Coreano',
+        flag: '🇰🇷',
+        ttsLang: 'ko-KR'
+      }
+    };
+
+    /* ==========================================================================
+       3. Motor de audio híbrido (Web Speech + Google TTS)
+       ========================================================================== */
+    let currentLang = 'km';
+    let activeAudio = null;
+
+    function showToast(text) {
+      const toast = document.getElementById('toastPopup');
+      document.getElementById('toastMsg').textContent = text;
+      toast.classList.add('show');
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function playAudio(word, pron, langCode) {
+      showToast(`🔊 [${word} : ${pron}]`);
+
+      // 1. Probar Web Speech API de iOS/Navegador
+      if ('speechSynthesis' in window) {
+        const voices = window.speechSynthesis.getVoices();
+        const hasVoice = voices.some(v => v.lang.startsWith(langCode.substring(0, 2)));
+        if (hasVoice || langCode.startsWith('ko')) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(word);
+          u.lang = langCode;
+          u.rate = 0.88;
+          window.speechSynthesis.speak(u);
+          return;
+        }
+      }
+
+      // 2. Fallback de Google Translate TTS (Ideal para Jemer)
+      if (activeAudio) {
+        activeAudio.pause();
+        activeAudio = null;
+      }
+      const tl = langCode.substring(0, 2);
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${tl}&q=${encodeURIComponent(word)}`;
+      const audio = new Audio(url);
+      activeAudio = audio;
+      audio.play().catch(e => console.warn("Audio fallback error", e));
+    }
+
+    /* ==========================================================================
+       4. Lógica del Quiz y almacenamiento
+       ========================================================================== */
+    let currentMode = 'all';
+    let questionPool = [];
+    let currentIndex = 0;
+    let currentQuestion = null;
+    let isAnswered = false;
+
+    let solvedCount = 0;
+    let correctCount = 0;
+    let comboCount = 0;
+    let wrongDict = { km: [], ko: [] };
+
+    function loadSavedWrongs() {
+      try {
+        ['km', 'ko'].forEach(l => {
+          const s = localStorage.getItem(`quiz_es_wrongs_${l}`);
+          if (s) wrongDict[l] = JSON.parse(s);
+        });
+      } catch (e) {}
+      updateWrongBadge();
+    }
+
+    function saveWrongs() {
+      try {
+        localStorage.setItem(`quiz_es_wrongs_${currentLang}`, JSON.stringify(wrongDict[currentLang]));
+      } catch (e) {}
+      updateWrongBadge();
+    }
+
+    function updateWrongBadge() {
+      document.getElementById('wrongCount').textContent = wrongDict[currentLang].length;
+    }
+
+    function switchLanguage(lang) {
+      currentLang = lang;
+      document.getElementById('btnLangKm').classList.toggle('active', lang === 'km');
+      document.getElementById('btnLangKo').classList.toggle('active', lang === 'ko');
+
+      const info = DB[lang];
+      document.getElementById('currentLangFlag').textContent = info.flag;
+      document.getElementById('appMainTitle').textContent = info.title;
+
+      const displayWord = document.getElementById('displayWord');
+      displayWord.className = `foreign-word ${info.fontClass}`;
+
+      initQuizPool();
+      updateWrongBadge();
+    }
+
+    function initQuizPool() {
+      const activeBank = DB[currentLang].bank;
+
+      if (currentMode === 'all') {
+        questionPool = [...activeBank];
+      } else if (currentMode === 'verb') {
+        questionPool = activeBank.filter(v => v.type === 'Verbo');
+      } else if (currentMode === 'adj') {
+        questionPool = activeBank.filter(v => v.type === 'Adjetivo');
+      } else if (currentMode === 'wrong') {
+        if (wrongDict[currentLang].length === 0) {
+          alert('¡No hay errores guardados! Practica primero con las preguntas.');
+          setMode('all');
+          return;
+        }
+        questionPool = [...wrongDict[currentLang]];
+      }
+
+      questionPool.sort(() => Math.random() - 0.5);
+      currentIndex = 0;
+      updateStats();
+      loadNextQuestion();
+    }
+
+    function loadNextQuestion() {
+      if (currentIndex >= questionPool.length) {
+        if (currentMode === 'wrong') {
+          alert('🎉 ¡Completaste el repaso de errores!');
+          setMode('all');
+          return;
+        } else {
+          alert('🏆 ¡Felicidades! Completaste las 1.000 preguntas.');
+          currentIndex = 0;
+          questionPool.sort(() => Math.random() - 0.5);
+        }
+      }
+
+      isAnswered = false;
+      const targetWord = questionPool[currentIndex];
+      const activeBank = DB[currentLang].bank;
+
+      const candidates = activeBank.filter(v => v.type === targetWord.type && v.meaning !== targetWord.meaning);
+      const distractors = candidates.sort(() => Math.random() - 0.5).slice(0, 3);
+      const options = [targetWord, ...distractors].sort(() => Math.random() - 0.5);
+
+      currentQuestion = { target: targetWord, options: options };
+      renderCard();
+    }
+
+    function renderCard() {
+      const q = currentQuestion;
+      const info = DB[currentLang];
+
+      document.getElementById('badgeCategory').textContent = `${q.target.type}`;
+      document.getElementById('displayWord').textContent = q.target.word;
+      document.getElementById('displayPron').textContent = `[${q.target.pron}]`;
+
+      document.getElementById('btnMainSpeak').onclick = () => {
+        playAudio(q.target.word, q.target.pron, info.ttsLang);
+      };
+
+      document.getElementById('feedbackBar').style.display = 'none';
+
+      const container = document.getElementById('optionsContainer');
+      container.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('div');
+        btn.className = 'option-btn';
+        btn.id = `optBtn_${idx}`;
+
+        btn.innerHTML = `
+          <div class="option-main-row">
+            <div class="option-left">
+              <span class="option-num">${idx + 1}</span>
+              <span class="option-meaning">${opt.meaning}</span>
+            </div>
+            <span class="option-status-badge" id="optBadge_${idx}"></span>
+          </div>
+
+          <!-- Revelación de todas las opciones al responder -->
+          <div class="option-revealed-area" id="revArea_${idx}">
+            <div class="revealed-content">
+              <div class="rev-word-group">
+                <span class="rev-foreign ${info.fontClass}">${opt.word}</span>
+                <span class="rev-pron">[${opt.pron}]</span>
+              </div>
+              <button class="btn-opt-tts" id="btnTts_${idx}">
+                🔊 Escuchar
+              </button>
+            </div>
+          </div>
+        `;
+
+        btn.onclick = () => {
+          if (!isAnswered) checkAnswer(idx, opt);
+        };
+
+        setTimeout(() => {
+          const ttsBtn = document.getElementById(`btnTts_${idx}`);
+          if (ttsBtn) {
+            ttsBtn.onclick = (e) => {
+              e.stopPropagation();
+              playAudio(opt.word, opt.pron, info.ttsLang);
+            };
+          }
+        }, 0);
+
+        container.appendChild(btn);
+      });
+
+      updateStats();
+    }
+
+    function checkAnswer(chosenIndex, chosenOption) {
+      if (isAnswered) return;
+      isAnswered = true;
+
+      solvedCount++;
+      const isCorrect = (chosenOption.meaning === currentQuestion.target.meaning);
+      const info = DB[currentLang];
+
+      if (isCorrect) {
+        correctCount++;
+        comboCount++;
+        wrongDict[currentLang] = wrongDict[currentLang].filter(w => w.word !== currentQuestion.target.word);
+        saveWrongs();
+      } else {
+        comboCount = 0;
+        if (!wrongDict[currentLang].some(w => w.word === currentQuestion.target.word)) {
+          wrongDict[currentLang].push(currentQuestion.target);
+          saveWrongs();
+        }
+      }
+
+      currentQuestion.options.forEach((opt, idx) => {
+        const btn = document.getElementById(`optBtn_${idx}`);
+        const badge = document.getElementById(`optBadge_${idx}`);
+        const revArea = document.getElementById(`revArea_${idx}`);
+
+        btn.classList.add('locked');
+        revArea.style.display = 'block';
+
+        if (opt.meaning === currentQuestion.target.meaning) {
+          btn.classList.add('correct');
+          badge.textContent = '✓ Correcto';
+        } else if (idx === chosenIndex) {
+          btn.classList.add('wrong-chosen');
+          badge.textContent = '✗ Tu elección';
+        } else {
+          btn.classList.add('distractor');
+        }
+      });
+
+      const feedbackBar = document.getElementById('feedbackBar');
+      const feedbackTitle = document.getElementById('feedbackTitle');
+
+      if (isCorrect) {
+        feedbackTitle.innerHTML = `<span style="color:var(--success);">🎉 ¡Excelente! Racha de ${comboCount} aciertos</span>`;
+        playAudio(currentQuestion.target.word, currentQuestion.target.pron, info.ttsLang);
+      } else {
+        feedbackTitle.innerHTML = `<span style="color:var(--danger);">😢 ¡Incorrecto! La respuesta correcta es [${currentQuestion.target.meaning}]</span>`;
+      }
+
+      feedbackBar.style.display = 'flex';
+      updateStats();
+    }
+
+    function goNext() {
+      currentIndex++;
+      loadNextQuestion();
+    }
+
+    function updateStats() {
+      document.getElementById('statCurrent').textContent = Math.min(currentIndex + 1, questionPool.length);
+      document.getElementById('statTotal').textContent = questionPool.length;
+      document.getElementById('statSolved').textContent = solvedCount;
+      document.getElementById('statCorrect').textContent = correctCount;
+      document.getElementById('statCombo').textContent = comboCount;
+
+      const rate = solvedCount > 0 ? Math.round((correctCount / solvedCount) * 100) : 0;
+      document.getElementById('statRate').textContent = `${rate}%`;
+
+      const progress = questionPool.length > 0 ? (currentIndex / questionPool.length) * 100 : 0;
+      document.getElementById('progressBar').style.width = `${progress}%`;
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+      initQuizPool();
+    }
+
+    /* ==========================================================================
+       5. Modal de Diccionario
+       ========================================================================== */
+    function renderVocabList(query = '') {
+      const container = document.getElementById('vocabList');
+      container.innerHTML = '';
+      const list = DB[currentLang].raw;
+      const fontClass = DB[currentLang].fontClass;
+      const ttsLang = DB[currentLang].ttsLang;
+
+      const filtered = list.filter(item => {
+        const q = query.toLowerCase();
+        return item.word.toLowerCase().includes(q) ||
+               item.pron.toLowerCase().includes(q) ||
+               item.meaning.toLowerCase().includes(q);
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:18px; color:var(--text-muted);">No se encontraron palabras.</div>';
+        return;
+      }
+
+      filtered.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'vocab-row';
+        row.innerHTML = `
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="${fontClass}" style="font-size:1.25rem; font-weight:700;">${item.word}</span>
+              <span style="color:var(--gold); font-size:0.9rem; font-weight:600;">[${item.pron}]</span>
+              <span style="font-size:0.72rem; color:#94a3b8; border:1px solid #475569; padding:1px 5px; border-radius:10px;">${item.type}</span>
+            </div>
+            <div style="font-size:0.88rem; color:#f1f5f9; margin-top:2px;">${item.meaning}</div>
+          </div>
+          <button class="btn-opt-tts" onclick="playAudio('${item.word}', '${item.pron}', '${ttsLang}')">
+            🔊 Oír
+          </button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    /* ==========================================================================
+       6. Eventos y Teclado
+       ========================================================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSavedWrongs();
+      initQuizPool();
+
+      // Cambio de idioma
+      document.getElementById('btnLangKm').onclick = () => switchLanguage('km');
+      document.getElementById('btnLangKo').onclick = () => switchLanguage('ko');
+
+      // Pestañas
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.onclick = () => setMode(btn.dataset.mode);
+      });
+
+      // Siguiente
+      document.getElementById('btnNext').onclick = goNext;
+
+      // Probar audio
+      document.getElementById('btnTestSound').onclick = () => {
+        if (currentLang === 'km') playAudio("សួស្តី", "suos-dei", "km");
+        else playAudio("안녕하세요", "an-nyeong-ja-se-yo", "ko-KR");
+      };
+
+      // Modal de diccionario
+      const modal = document.getElementById('vocabModal');
+      document.getElementById('btnOpenVocab').onclick = () => {
+        document.getElementById('vocabModalTitle').textContent = `📖 Diccionario - ${DB[currentLang].title}`;
+        modal.classList.add('open');
+        renderVocabList();
+      };
+      document.getElementById('btnCloseVocab').onclick = () => modal.classList.remove('open');
+      document.getElementById('vocabSearch').oninput = (e) => renderVocabList(e.target.value);
+
+      // Atajos de teclado
+      window.addEventListener('keydown', (e) => {
+        if (modal.classList.contains('open')) return;
+        if (!isAnswered) {
+          if (['1', '2', '3', '4'].includes(e.key)) {
+            const i = parseInt(e.key) - 1;
+            if (currentQuestion && currentQuestion.options[i]) {
+              checkAnswer(i, currentQuestion.options[i]);
+            }
+          }
+        } else {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            goNext();
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
